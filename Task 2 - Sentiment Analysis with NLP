@@ -1,0 +1,46 @@
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, accuracy_score
+
+# Step 1: Create a dataset of customer reviews
+data = {
+    'review': [
+        'This product is amazing, I love it!',      # Positive
+        'Terrible experience, not recommended.',   # Negative
+        'Excellent quality and great service.',    # Positive
+        'Worst product ever, do not buy.',         # Negative
+        'Very happy with my purchase.',            # Positive
+        'Completely dissatisfied and unhappy.',    # Negative
+        'Great value for the price!',              # Positive
+        'It broke after one use, horrible!',       # Negative
+        'Satisfied with the product overall.',     # Positive
+        'Not worth the money, very disappointed.'  # Negative
+    ],
+    'sentiment': [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]  # 1: Positive, 0: Negative
+}
+
+# Convert the dataset to a pandas DataFrame
+df = pd.DataFrame(data)
+
+# Step 2: TF-IDF Vectorization
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(df['review'])  # Transform the reviews to TF-IDF features
+y = df['sentiment']  # Target variable
+
+# Step 3: Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 4: Logistic Regression Model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Step 5: Predictions and Evaluation
+y_pred = model.predict(X_test)
+
+# Print results
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
